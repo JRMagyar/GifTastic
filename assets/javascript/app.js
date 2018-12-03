@@ -26,6 +26,7 @@ function renderGifs(){
     method: "GET"
     })
         .then(function(response){
+            $("#gif-holder").empty();
             for(i=0; i < response.data.length; i++){
                 var animate = response.data[i].images.original.url;
                 var static = response.data[i].images.original_still.url;
@@ -37,7 +38,7 @@ function renderGifs(){
                 img.attr("data-status", "static")
                 img.attr("src", static)
 
-                $("#gif-holder").prepend(img)
+                $("#gif-holder").append(img)
             }
         })
 }
