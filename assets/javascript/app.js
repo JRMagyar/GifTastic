@@ -29,7 +29,6 @@ function renderGifs(){
     method: "GET"
     })
         .then(function(response){
-            console.log(response)
             $("#gif-holder").empty();
             //for every data item in response (10)
             for(i=0; i < response.data.length; i++){
@@ -45,13 +44,6 @@ function renderGifs(){
                 //collects value of rating and displays it in text, adds class rating so it can be selected with css
                 rated.html("Rating: " + response.data[i].rating + "<br>")
                 rated.attr("class", "rating")
-
-                //creating favorite button. Adds clas fav-btn so can be selected by class later, adds class btn for css, adds data value so can be used prevent gif from being faved multiple times, adds value of [i] so it can be used to select corresponding image later
-                fav.attr("class", "fav-btn")
-                fav.addClass("btn")
-                fav.attr("data-faved", "no")
-                fav.attr("src", "assets/images/unliked.png")
-                fav.attr("value", [i])
                  
                 //stores both img urls for later usage, given class og gifs so can be selected later, default src is static, data-status added so image can pause and unpause, id of img-[i] given so can be selected when clicking corresponding fav button later
                 img.attr("data-animate", animate);
@@ -60,14 +52,28 @@ function renderGifs(){
                 img.attr("data-status", "static");
                 img.attr("src", static);
                 img.attr("id", "img-" + [i])
+
+                //if statement checks if image has been favorited yet and assigns appropriate button
+                if(favImages.indexOf(static) == -1){
+                    fav.attr("data-faved", "no")
+                    fav.attr("src", "assets/images/unliked.png")
+                }  
+                else{
+                    fav.attr("data-faved", "yes")
+                    fav.attr("src", "assets/images/liked.png")
+                }
                 
+                //adds classes to buttons so they can be called later, assigns value to button to use when calling images
+                fav.attr("class", "fav-btn")
+                fav.addClass("btn")
+                fav.attr("value", [i])
+
                 //fav button added in front of rating, image added after
                 rated.prepend(fav)
                 rated.append(img)
 
                 //everything added to gif-holder div
                 $("#gif-holder").append(rated)
-                // $("#gif-holder").append(img)
                 
             }
         })
@@ -118,7 +124,6 @@ $(document).on("click", ".fav-btn", function(){
 
     //storing static src in array in order to check if faved when rendered
     favImages.push(copyImg.attr("data-static"));
-    console.log(favImages)
     
     //copies attributes from image to fav and adds class of copied so it can be selected by class later. (need to research .clone method further, may be able to clean this up some)
     newImg.attr("data-animate", copyImg.attr("data-animate"));
