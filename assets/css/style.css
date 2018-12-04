@@ -1,8 +1,18 @@
 .gifs{
-    max-width: 300px;
+    max-width: 280px;
     max-height: 300px;
-    margin: 15px;
+    margin: 5px 10px 10px 0px;
+    
 }
 .search-btn{
     margin: 5px;
+}
+.rating{
+    margin:0px 0px 0px 10px;
+    display: inline-table;
+    
+}
+.fav-btn{
+    height: 40px;
+    width: 50px;
 }
