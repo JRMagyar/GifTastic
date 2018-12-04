@@ -1,8 +1,21 @@
 window.onload = function(){
+// localStorage.clear();
+
 //variable to populate predefined buttons
 var animals = ["cat","tortoise","toad","goose","goldfish"];
-//array used to check if image already favorited
-var favImages = [];
+
+//array used to check if image already favorited //if the object exists in local storage it uses that, if it doesn't the array is empty
+if (localStorage.getItem("favArrayStatic") == null){
+    var favImagesStatic = [];
+    var favImagesAnimate = [];
+}
+else{
+    //the array is pulled as a string and so needs split
+    var favImagesStaticString =localStorage.getItem("favArrayStatic")
+    var favImagesAnimateString = localStorage.getItem("favArrayAnimate")
+    var favImagesStatic = favImagesStaticString.split(",")
+    var favImagesAnimate = favImagesAnimateString.split(",")
+}
 
 //function to add buttons
 function renderButtons (){
@@ -54,7 +67,7 @@ function renderGifs(){
                 img.attr("id", "img-" + [i])
 
                 //if statement checks if image has been favorited yet and assigns appropriate button
-                if(favImages.indexOf(static) == -1){
+                if(favImagesStatic.indexOf(static) == -1){
                     fav.attr("data-faved", "no")
                     fav.attr("src", "assets/images/unliked.png")
                 }  
@@ -122,8 +135,9 @@ $(document).on("click", ".fav-btn", function(){
     var copyImg = $("#img-" + imgNum);
     var newImg = $("<img>");
 
-    //storing static src in array in order to check if faved when rendered
-    favImages.push(copyImg.attr("data-static"));
+    //storing src in array in order to check if faved when rendered
+    favImagesStatic.push(copyImg.attr("data-static"));
+    favImagesAnimate.push(copyImg.attr("data-animate"));
     
     //copies attributes from image to fav and adds class of copied so it can be selected by class later. (need to research .clone method further, may be able to clean this up some)
     newImg.attr("data-animate", copyImg.attr("data-animate"));
@@ -138,10 +152,31 @@ $(document).on("click", ".fav-btn", function(){
     
     //changes data-faved value so cannot be faved again, changes icon to show image has been faved
     $(this).attr("data-faved", "yes");
-    $(this).attr("src", "assets/images/liked.png")
+    $(this).attr("src", "assets/images/liked.png");
+
+    localStorage.setItem("favArrayStatic", favImagesStatic);
+    localStorage.setItem("favArrayAnimate", favImagesAnimate);
     }
     
 })
 //renders button on load
 renderButtons();
+
+//render favorites on load
+for(i=0; i < favImagesStatic.length; i++){
+    var animate = favImagesAnimate[i];
+    var static =  favImagesStatic[i];
+
+    var favImg = $("<img>")
+
+    favImg.attr("data-animate", animate);
+    favImg.attr("data-static", static);
+    favImg.attr("class", "gifs");
+    favImg.attr("data-status", "static");
+    favImg.attr("src", static);
+
+    $("#fav-holder").append(favImg)
+
+}
+
 }
