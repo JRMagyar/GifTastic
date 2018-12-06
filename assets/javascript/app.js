@@ -3,6 +3,8 @@ window.onload = function(){
 
 //variable to populate predefined buttons
 var animals = ["cat","tortoise","toad","goose","goldfish"];
+let queryNum = 10;
+var query = "";
 
 //array used to check if image already favorited //if the object exists in local storage it uses that, if it doesn't the array is empty
 if (localStorage.getItem("favArrayStatic") == null){
@@ -33,9 +35,9 @@ function renderButtons (){
 //function to add gifs
 function renderGifs(){
     //takes stored data value of button for query
-    var query = $(this).attr("data-animal")
     
-    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + query + "&api_key=uTqd9ezIs8uSleAAKEB0ZyDxpc94XTZn&limit=10"
+    
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + query + "&api_key=uTqd9ezIs8uSleAAKEB0ZyDxpc94XTZn&limit=" + queryNum;
 
     $.ajax({
     url: queryURL,
@@ -61,6 +63,7 @@ function renderGifs(){
                 //stores both img urls for later usage, given class og gifs so can be selected later, default src is static, data-status added so image can pause and unpause, id of img-[i] given so can be selected when clicking corresponding fav button later
                 img.attr("data-animate", animate);
                 img.attr("data-static", static);
+                img.attr("data-query", query)
                 img.attr("class", "gifs");
                 img.attr("data-status", "static");
                 img.attr("src", static);
@@ -89,6 +92,13 @@ function renderGifs(){
                 $("#gif-holder").append(rated)
                 
             }
+            var d = $("<div>")
+            var b = $("<button>")
+            b.attr("id","load-more")
+            b.text("Load More")
+            d.append(b)
+            $("#gif-holder").append(d)
+
         })
 }
 
@@ -107,7 +117,12 @@ $("#add-animal").on("click", function(event){
 })
 
 //when any search button is clicked, function to renderGifs is run
+$(document).on("click", ".search-btn", function(){
+    queryNum = 10;
+    query = $(this).attr("data-animal")
+})
 $(document).on("click", ".search-btn", renderGifs)
+
 
 //when gif is clicked image is paused or unpaused
 $(document).on("click", ".gifs", function(){
@@ -124,6 +139,13 @@ $(document).on("click", ".gifs", function(){
         $(this).attr("src", $(this).attr("data-static"))
         $(this).attr("data-status", "static")
     }
+})
+
+//when load more button is clicked
+$(document).on("click", "#load-more", function(){
+    queryNum += 10;
+    query= $("#img-0").attr("data-query")
+    renderGifs()
 })
 
 //when fav button is clicked
