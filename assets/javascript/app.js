@@ -44,9 +44,9 @@ function renderGifs(){
     method: "GET"
     })
         .then(function(response){
-            $("#gif-holder").empty();
+            
             //for every data item in response (10)
-            for(i=0; i < response.data.length; i++){
+            for(i=(response.data.length - 10); i < response.data.length; i++){
                 //holds url for animated gif
                 var animate = response.data[i].images.original.url;
                 //holds url for static gif
@@ -92,12 +92,13 @@ function renderGifs(){
                 $("#gif-holder").append(rated)
                 
             }
+            $("#end-button").empty();
             var d = $("<div>")
             var b = $("<button>")
             b.attr("id","load-more")
             b.text("Load More")
             d.append(b)
-            $("#gif-holder").append(d)
+            $("#end-button").append(d)
 
         })
 }
@@ -119,6 +120,7 @@ $("#add-animal").on("click", function(event){
 //when any search button is clicked, function to renderGifs is run
 $(document).on("click", ".search-btn", function(){
     queryNum = 10;
+    $("#gif-holder").empty();
     query = $(this).attr("data-animal")
 })
 $(document).on("click", ".search-btn", renderGifs)
